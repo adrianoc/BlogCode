@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DYK II - LINQ Projections", "DYK II - LINQ Projections.csproj", "{26021260-397E-4A0D-8D63-BC7534B6595B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o-2008", "..\..\..\..\..\Projects\db4o\trunk\db4o.net\Db4objects.Db4o\Db4objects.Db4o-2008.csproj", "{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Db4objects.Db4o.Linq-2008", "..\..\..\..\..\Projects\db4o\trunk\db4o.net\Db4objects.Db4o.Linq\Db4objects.Db4o.Linq-2008.csproj", "{23531440-0922-43EB-A483-6592FFC2F093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqProjectionTests", "LinqProjectionTests\LinqProjectionTests.csproj", "{E511405F-F858-4EBC-B933-041D3CB2A3D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{26021260-397E-4A0D-8D63-BC7534B6595B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26021260-397E-4A0D-8D63-BC7534B6595B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26021260-397E-4A0D-8D63-BC7534B6595B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26021260-397E-4A0D-8D63-BC7534B6595B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{600CD3BF-2ED2-4183-87F7-ADD78A968AE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23531440-0922-43EB-A483-6592FFC2F093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23531440-0922-43EB-A483-6592FFC2F093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23531440-0922-43EB-A483-6592FFC2F093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23531440-0922-43EB-A483-6592FFC2F093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E511405F-F858-4EBC-B933-041D3CB2A3D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E511405F-F858-4EBC-B933-041D3CB2A3D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E511405F-F858-4EBC-B933-041D3CB2A3D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E511405F-F858-4EBC-B933-041D3CB2A3D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

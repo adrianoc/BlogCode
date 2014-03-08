@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace CoContraVariance
 {
@@ -17,6 +19,9 @@ namespace CoContraVariance
 			{
 				Console.WriteLine(item);
 			}
+
+			IEnumerable<Derived> deriveds = derivedArray;
+			IEnumerable<Base> bases = deriveds;
 		}
 	}
 }

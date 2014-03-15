@@ -1,5 +1,4 @@
 class Exemplo
 {
-	private int campo;
-	public int PropriedadeSomenteLeitura { get { return campo; } }
+	public int PropriedadeSomenteLeitura { get; private set; }
 }

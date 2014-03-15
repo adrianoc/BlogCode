@@ -1,9 +1,14 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace CoContraVariance
 {
+	interface IFoo<out T, in I>
+	{
+		T GetValue();
+		T AsProp { get; }
+		I AsPropI { set; }
+	}
+
 	class Base { }
 
 	class Derived : Base { }
@@ -12,16 +17,18 @@ namespace CoContraVariance
 	{
 		static void Main(string[] args)
 		{
-			Derived[] derivedArray = new [] { new Derived(), new Derived() };
-			Base[] baseArray = derivedArray;
+			//IFoo<Derived> derivedItf = null;
+			//IFoo<Base> baseItf = derivedItf;
+			
+			Action<Derived> ad = Foo;
+			
+			Action<Base> ab = Foo;
+			Action<Derived> ad2 = ab;
+		}
 
-			foreach (var item in baseArray)
-			{
-				Console.WriteLine(item);
-			}
-
-			IEnumerable<Derived> deriveds = derivedArray;
-			IEnumerable<Base> bases = deriveds;
+		private static void Foo(Base b)
+		{
+			
 		}
 	}
 }

@@ -15,7 +15,7 @@ class Exemplo
 
 			string Name { get { return "name"; } }
 		}
+		
+		System.Console.WriteLine(itfImpl.Name);
 	}
-
-	System.Console.WriteLine(itfImpl.Name);
 }

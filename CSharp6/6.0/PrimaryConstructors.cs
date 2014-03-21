@@ -1,3 +1,5 @@
-class Exemplo (int valor, string nome) // Isto definiria os campos valor e nome.
+class Exemplo (int valor, string nome)
 {
+	private int valor;
+	private string nome;
 }

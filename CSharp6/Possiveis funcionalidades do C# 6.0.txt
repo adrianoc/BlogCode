@@ -1,23 +1,23 @@
 Possiveis funcionalidades do C# 6.0
 
-Sei que para alguns desenvolvedores este post será visto como notícia velha, mas eu me deparei com estas informaçoes hoje e as achei bem interessante, assim sendo, decidi postar sobre o assunto (mesmo porque não encontrei muito sobre o assunto em português).
+Sei que alguns desenvolvedores verão este post como notícia velha, mas eu me deparei com estas informaçoes hoje e as achei bem interessante e acredito que estas podem ser úteis a mais desenvolvedores (mesmo porque não encontrei muito sobre o assunto em português), assim sendo, decidi postar sobre o assunto.
 
-Se você deseja ver os posts onde encontrei tais informações (em inglês) veja [http://damieng.com/blog/2013/12/09/probable-c-6-0-features-illustrated][estes] [http://wesnerm.blogs.com/net_undocumented/2013/12/mads-on-c-60.html][links] (ambos são baseados em um evento da Microsoft que ocorreu em Londres chamado [http://ndclondon.oktaset.com/t-11783][NDC] que ocorreu em Dez/2013).
+Se você deseja ver os posts originais onde encontrei tais informações (em inglês) veja [http://damieng.com/blog/2013/12/09/probable-c-6-0-features-illustrated][estes] [http://wesnerm.blogs.com/net_undocumented/2013/12/mads-on-c-60.html][links] (ambos são baseados em um evento da Microsoft que ocorreu em Londres chamado [http://ndclondon.oktaset.com/t-11783][NDC] que ocorreu em Dez/2013).
 
 Os comentários representam a minha opnião (que pode não representar nada para você :)) e eu não sou, de forma alguma, um especialista em linguagens de programação (por exemplo não fiz esforço algum para verificar se as minhas sugestões não introduziriam ambiguidades na sintaxe da linguagem).
 
-{ DefaultProcessors:[SyntaxHighlight, HtmlEncode] }
+{/
+	+git:GitContent -> HtmlEncode
+	+sh:SyntaxHighlighter
+	+nb:NiceBox
+/}
 
 ----
 "Primary constructors"
 
-C# 5.0
+{| git=CSharp6/5.0/PrimaryConstructors.cs sh.toolbar=false nb.lang=C# 5.0 |}
 
-{ CSharp6/5.0/PrimaryConstructors.cs }
-
-C# 6.0
-
-{ CSharp6/6.0/PrimaryConstructors.cs }
+{| git=CSharp6/6.0/PrimaryConstructors.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
 - Não ficou claro para mim
 	- será possível ter um corpo no construtor ?
@@ -28,68 +28,30 @@ C# 6.0
 - Já que o objetivo é simplificar porque não introduzir um conceito tipo "campos automáticos" ou mesmo "propriedades automáticas" permitindo assim
   reescrever o exemplo como: 
 
-{ CSharp6/6.0/PrimaryConstructors.cs@primary-ctor-proposal }
-class Exemplo (int valor, string nome) // Isto definiria os campos valor e nome.
-{
-}
+{| git=CSharp6/6.0/PrimaryConstructors.cs@primary-ctor-proposal nb.lang=C# 6.0 sh.toolbar=false |}
 
 ----
 Propriedades (automaticas) somente leitura 
 
-C# 6.0
+{| git=CSharp6/5.0/AutomaticReadOnlyProperties.cs nb.lang=C# 5.0 sh.toolbar=false |}
 
-class Exemplo1
-{
-	public int PropriedadeSomenteLeitura { get; } = campo;
-}
-
-C# 5.0
-
-class Exemplo1
-{
-	private int campo;
-	public int PropriedadeSomenteLeitura { get { return campo; } }
-}
+{| git=CSharp6/6.0/AutomaticReadOnlyProperties.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
 Eu realmente não vejo muito ganho com isto. Eu prefiro a versão abaixo (já suportada atualment é claro)
 (ok, eu sei que as mesmas não semanticamente equivalentes)
 
-class Exemplo1
-{
-	public int PropriedadeSomenteLeitura { get; private set; }
-}
+{| git=CSharp6/5.0/AutomaticReadOnlyProperties.cs@today nb.lang=C# 5.0 sh.toobar=false |}
 
 - O que pode ser usado como valor da propriedade? Qualquer expressão? 
 
-class Exemplo1
-{
-	public int PropriedadeSomenteLeitura { get; } = um_campo_qualquer * UmMethodQualquer(1.0);
-}
+{| git=CSharp6/6.0/AutomaticReadOnlyProperties.cs@what-is-supported nb.lang=C# 6.0 sh.toolbar=false |}
 
 ----
 "Using" para membros estáticos
 
-C# 6.0
+{| git=CSharp6/5.0/StaticMemberUsings.cs nb.lang=C# 5.0 sh.toolbar=false |}
 
-using System.Math;
-class Exemplo1
-{
-	public double M()
-	{
-		return Sqrt(1.0, 4.2);
-	}
-}
-
-C# 5.0
-
-using System;
-class Exemplo1
-{
-	public double M()
-	{
-		return Math.Sqrt(1.0, 4.2);
-	}
-}
+{| git=CSharp6/6.0/StaticMemberUsings.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
 Sério? Java já suporta este recurso a algum tempo... e eu nunca gostei muito do mesmo... :(
 
@@ -97,35 +59,16 @@ Sério? Java já suporta este recurso a algum tempo... e eu nunca gostei muito d
 ----
 Property Expressions (cara, não sei nem como traduzir isso)
 
-C# 6.0
+{| git=CSharp6/5.0/PropertyExpressions.cs nb.lang=C# 5.0 sh.toolbar=false |}
 
-class Exemplo1
-{
-	public decimal ValorTotal => Quantidade * ValorUnitario;
-}
+{| git=CSharp6/6.0/PropertyExpressions.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
-C# 5.0
+- Ok, na minha opnião vivemos muito bem sem este recurso.
 
-class Exemplo1
-{
-	public decimal ValorTotal { get { return Quantidade * ValorUnitario ; } }
-}
-
-Ok, na minha opnião vivemos muito bem sem este recurso.
-
-Péssimo nome (vai causar confusão)
-
+- Péssimo nome (vai causar confusão)
 
 ----
 "Method expressions"
-
-C# 6.0
-
-class Exemplo1
-{
-	public Point Move(int dx, int dy) => new Point(X + dx, Y + dy);
-}
-
 
 C# 5.0
 
@@ -137,110 +80,89 @@ class Exemplo1
 	}
 }
 
+C# 6.0
+
+class Exemplo1
+{
+	public Point Move(int dx, int dy) => new Point(X + dx, Y + dy);
+}
+
 Hum... 
 
 
 ----
 Enumerables como parâmetros do tipo "params"
 
-C# 6.0
+{| git=CSharp6/5.0/EnumerableParams.cs nb.lang=C# 5.0 sh.toolbar=false |}
 
-class Exemplo1
-{
-	public void FazAlgo(params IEnumerable<MeuTipo> items) { }
-}
-
-C# 5.0
-
-class Exemplo1
-{
-	public void FazAlgo(params []MeuTipo items) { }
-}
+{| git=CSharp6/6.0/EnumerableParams.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
 Ok, dessa eu gostei pois não me obriga criar arrays só para poder chamar métodos como no exemplo acima (lembre-se que arrays em C# implementam IEnumerable<T> então, passar arrays, para métodos definidos como o exemplo acima, não exige conversões!
 
 ----
 Checagem de "null" mais inteligente (ou "monadic null checking", o que quer que isso queira dizer ;)
 
-C# 6.0
+{| git=CSharp6/5.0/MonadicNullChecking.cs nb.lang=C# 5.0 sh.toolbar=false |}
 
-class Exemplo1
-{
-	public int M(IList<string> ss)
-	{
-		return ss?.FirstOrDefault()?.Length ?? -1;
-	}
-}
-
-C# 5.0
-
-class Exemplo1
-{
-	public int M(IList<string> ss)
-	{
-		if (ss != null)
-		{
-		 	var primeiraOuNulo = ss.FirstOrDefault();
-		 	if (primeiraOuNulo != null)
-		 		return primeiraOuNulo.Length;
-		}
-		return -1;
-	}
-}
+{| git=CSharp6/6.0/MonadicNullChecking.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
 Vamos acabar com o Natal! (afinal de contas, este tipo de sintaxe ajudaria em muito a por um fim em código tipo arvore de natal).
+
+Ponto para a equipe do C#
 
 ----
 Inferência de tipos a partir de parêmtros de construtores
 
-C# 6.0
+{| git=CSharp6/5.0/GenericTypeInferenceInCtors.cs nb.lang=C# 5.0 sh.toolbar=false |}
 
-void M()
-{
-	var l = new List { "Lista", "de", "strings" };
-}
-
-C# 5.0
-
-void M()
-{
-	var l = new List<string> { "Lista", "de", "strings" };
-}
+{| git=CSharp6/6.0/GenericTypeInferenceInCtors.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
 Preciso dizer algo? Mais um ponto para os designer da linguagem
 
 ----
 Declaração "inline" para parâmetros "out"
 
-C# 6.0
+{| git=CSharp6/5.0/InlineOutParameters.cs nb.lang=C# 5.0 sh.toolbar=false |}
 
-void M()
-{
-	return Int32.TryParse("42", out int valor) ? valor : -1;
-}
+{| git=CSharp6/5.0/InlineOutParameters.cs nb.lang=C# 6.0 sh.toolbar=false |}
 
-C# 5.0
+Hum.. este recurso me deixou em dúvida.
 
-void M()
-{
-	int valor;
-	if(Int32.TryParse("42", out valor))
-		return valor;
 
-	return -1;
-}
+Mesmo que não seja relacionado exclusivamente ao C#, de acordo com Anders Hejlsberg ([http://channel9.msdn.com/Events/Build/2013/9-006][neste vídeo] +- 00:34), é possível que o projeto conhecido como [http://msdn.microsoft.com/en-us/vstudio/roslyn.aspx][Roslyn] também será liberado na próxima versão do Visual Studio! Se você ainda não deu uma olhada no mesmo, eu recomendo pegar alguns minutos (possivelmente algumas horas :)) para fazê-lo! 
 
 ------
 
-Algumas funcionalidades que eu realmente gostaria de ver na próxima versão do C#!
+Agora que já discuti as possíveis funcionalidades da próxima versão do C# (pelo menos, segundo os posts que eu encontrei), gostaria de expor minha lista de desejos pessoal (ou seja, algumas funcionalidades que eu realmente gostaria de ver na próxima versão do C#):
 
-- Interpolação de strings
 
-- Classes anônimas implementando interfaces.
+## Classes anônimas implementando interfaces
 
-- Pattern matching ????
+Se você já desenvolveu em Java provavelmente já fez uso deste recurso e possivelmente sabe o potencial para diminuir a quantidade de código escrito bem com simplificá-lo. Sinceramente, este é uma das poucas funcionalidades de Java que eu sinto falta no C#. Se você não tem idéia do que estou falando veja o exemplo abaixo:
 
-- Extension properties !!!!
+{| git=CSharp6/AnonymousInterfaceImplementation.cs nb.lang=C# Algum dia sh.toolbar=false |}
+
+## Extension properties
+
+Da mesma forma que extension methods podem simplificar, e muito, algums cenários de programação, acredito que o mesmo conceito aplicado à proriedades seria bastante útil (pelo menos eu já me deparei com algumas cituações onde o mesmo seria realmente muito útil).
+
+{| git=CSharp6/ExtensionProperties.cs nb.lang=Proposta sh.toolbar=false |}
+
+
+
+## Interpolação de strings
+
+[http://en.wikipedia.org/wiki/String_interpolation][Interpolação de strings] permite a substituição de uma (ou mais) parte(s) de uma string pelo valor de uma variável de uma forma simples e intuitiva.
+
+Abaixo apresento um exemplo hipotético caso o conceito fosse suportado em C#:
+
+{| git=CSharp6/StringInterpolation.cs nb.lang=Proposta sh.toolbar=false |}
+
+O mesmo exemplo, hoje, tem que ser escrito como:
+
+{| git=CSharp6/StringInterpolation.cs@si-today nb.lang=C# 5.0 sh.toolbar=false |}
+
+Eu, apesar de algumas reservas devido ao potencial de confusão em casos onde strings referenciam variáveis declaradas em um ponto distante, gostaria de ver esta funcionalidade na próxima versão do C#!
 
 
 Boa programação!

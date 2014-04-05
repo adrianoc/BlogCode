@@ -14,6 +14,11 @@ class Test
 {
 	public static void Main(string[] args)
 	{
-		var x = new Coll() { "foo", "bar", "baz" };
+		var x = new Coll() 
+		{ 
+			"foo",
+			"bar",
+			"baz" 
+		};
 	}
 }

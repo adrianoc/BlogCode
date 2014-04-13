@@ -1,6 +1,5 @@
 using System.Collections;
 
-
 static class Extensoes
 {
 	public static void Add(this Coll coll, string s)

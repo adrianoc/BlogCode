@@ -5,11 +5,17 @@ class Example
 		try 
 		{ 
 		} 
-		catch(MyException me => me.SomeProp == 42)
+		catch(MyException me) if (CheckException(me))
 		{ 
 			// trata a exceção aqui 
 		}
 	}
+
+    private static bool CheckException(MyException ex)
+    {
+        return ex.SomeProp == 42;
+    }
+
 }
 
 class MyException : System.Exception

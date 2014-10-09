@@ -1,6 +1,7 @@
 namespace CoContraVariance 
 {
   class Base { } 
+
   class Derived : Base { } 
 
   class Program 

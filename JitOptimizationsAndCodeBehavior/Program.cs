@@ -23,11 +23,6 @@ class Test
             Thread.Sleep(SleepTime);
         }
 
-        return N(n - 1);
-    }
-
-    internal int N(int n)
-    {
-        return M(n -1);
-    }
+        return M(n - 1);
+    } 
 }

@@ -3,7 +3,7 @@
 [Read this post in English.](https://programing-fun.blogspot.com/2023/05/uma-funcionalidade-do-cecilifier-pouco.html)
 
 <script>
-populateToc("https://gist.githubusercontent.com/adrianoc/d3e3071912c2491889ac99566bd21c49/raw/1113bd226117e32a48a145dc2883bf697b3979ca/struct_posts_toc.pt.json", 'struct-series-toc');
+populateToc("https://raw.githubusercontent.com/adrianoc/BlogCode/refs/heads/main/StructCtors/toc.pt.js", 'struct-series-toc');
 </script>
 
 <p id="struct-series-toc">

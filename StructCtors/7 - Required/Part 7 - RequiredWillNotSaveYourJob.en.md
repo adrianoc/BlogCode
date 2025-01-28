@@ -10,7 +10,7 @@ populateToc("https://gist.githubusercontent.com/adrianoc/3e3a5159d438ea953c46f5a
 
 The history of the current post is a little bit embarrassing.
 
-During the process of defining the topics I'd cover I've learned about a C# 11 feature called [`required members`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required) which I naively though could be used to flag these scenarios so I planned to add a post showing how to achieve that; however during investigation/drafting[^1] the content for the post, I've realized that that was not one of the goals of this feature and that there were multiple corner cases in which no warning would be emitted even though no constructor would be invoked[^2].
+During the process of defining the topics I'd cover I've learned about a C# 11 feature called [`required members`](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required) which I naively though could be used to flag these scenarios so I planned to add a post showing how to achieve that; however during investigation/drafting[^1] the content, I've realized that that was not one of the goals of this feature and that there were multiple corner cases in which no warning would be emitted even though no constructor would be invoked[^2].
 
 The main idea would be to to mark all members (field/properties) that would be initialized in the constructors as `required` and add the [`SetsRequiredMembers`](https://learn.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.requiredmemberattribute?view=net-8.0) attribute to these constructors in such a way that in cases where no constructors (decorated with `SetRequiredMembersAttribute`) were to be invoked the compiler would emit a warning/error due to the non-initialization of such members.
 
@@ -37,10 +37,10 @@ With this change in place, instead of silently getting an instance of `S2` initi
 
 Not perfect, given that the message will probably be very confusing if one is (incorrectly, but understandably) expecting `S2` constructor to be invoked, but there are other limitations rendering this approach even less viable:
 
-  - Failure to detect constructors not being invoked (at least) in _default expression_ and _array instantiations_.
+  - Inability to detect constructors not being invoked (at least) in _default expression_ and _array instantiations_.
   - Even in scenarios in which this would work it is impossible to guarantee that a ctor will be invoked (for instance, if we change the code at line #1 to `new S2() { v = 5 }`, no constructor will be invoked but no warning/error will be emitted either)
 
-A more effective alternative (if you deploy your application as a managed one as opposed to AOTing it) to detect such scenarios is by explicitly asserting that struct instances have been initialized[^4] (either by a constructor or some other means) prior to accessing its members; since the code is being JITed one can implement this in a way users can control whether the check should be enforced or not and, if not enforcing, have very little (if any) performance impact, as in the example below.
+A more effective alternative (if you deploy your application as a managed one as opposed to AOTing it) to detect such scenarios is by explicitly asserting that struct instances have been initialized[^4] (either by a constructor or some other means) prior to accessing its members; since the code is being JITed one can implement this in a way users can control whether the check should be enforced or not and have very little (if any) performance impact when enforcing is disabled, as demonstrated below.
 
 ```CSharp
 using System.Runtime.CompilerServices;
@@ -91,7 +91,7 @@ struct Foo
 }
 ```
 
-The code use the field `_shouldValidate` to control whether correct initialization[^4] should be enforced or not (in this case more specifically, if the constructor has been executed), Notice that this field is declared as `static readonly`; this is very important since with this in place the JIT knowns that, for a given struct instance, once initialized the field value **will never change** so it is free to handle `_shouldValidate` as a constant and do not generate code to check it in the **if** in line #XX; moreover, in case it is evaluated to `false` the JIT can remove the whole `if` statement (whence the close to zero overhead mentioned before).
+The code use the field `_shouldValidate` to control whether correct initialization[^4] should be enforced or not (in this case more specifically, if the constructor has been executed). Notice that this field is declared as `static readonly`; this is very important since with this in place the JIT knowns that, for a given struct instance, once initialized, the field value **will never change** so it is free to handle `_shouldValidate` as a constant and to not generate code to check it in the **if** in line #XX; moreover, in case it is evaluated to **false** the JIT can remove the whole `if` statement (whence the close to zero overhead mentioned before).
 
 You can see this JIT *magic* in action by opening a terminal, creating a console application with the code above and running:
 
@@ -105,7 +105,7 @@ which:
 1. builds the application in **release mode** (`-c Release`), which is requirement for the optimization to be applied.
 1. instructs the JIT to dump the JITed assembly code for the method `Use()` by setting `DOTNET_JitDisasm` environment variable accordingly.
 
-When executing that command line you should see 0 and some assembly code being printed to the terminal multiple times; after some iterations you should be able to spot some assembly code resembling the one below (make sure to check one that contains `Tier1` as opposed to `Tier0`):
+When executing that command line you should see zeros (0) and some assembly code being printed to the terminal multiple times; after some iterations you should be able to spot some assembly code resembling the one below (make sure to check the one that contains `Tier1` as opposed to `Tier0`):
 
 ```nasm
 ; Assembly listing for method Foo:Use():this (Tier1)
@@ -146,7 +146,7 @@ DOTNET_JitDisasm=Use dotnet run -c Debug
 
 in which case, no matter for how long the application runs, the assembly code generated for `Use()` will always call `Verify()` (i.e. optimization was not applied because application was built in **debug mode**)
 
-With this approach one ensure that no code is using `uninitialized` instances by simply running the code with the environment variable set to `true`.
+With this approach one can be sure that no code is using `uninitialized` instances by simply running the code with the environment variable set to `true` and observing for exceptions.
 
 As always, all feedback is welcome.
 

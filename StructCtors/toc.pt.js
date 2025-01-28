@@ -1,0 +1,14 @@
+{
+    "toc_entries":
+    [
+       { "description": "Structs em C# são divertidas", "url": "https://programing-fun.blogspot.com/2023/06/structs-in-c-are-fun-part-19.html" },
+       { "description": "Breve introdução a Tipos de Valor vs Tipos de Referência", "url": "https://programing-fun.blogspot.com/2023/07/structs-in-c-are-fun-part-29-brief.html" },
+       { "description": "Inicialização de campos em structs", "url": "https://programing-fun.blogspot.com/2023/08/structs-in-c-are-fun-part-39-field.html" },
+       { "description": "Construtores e comportamento das structs", "url": "https://programing-fun.blogspot.com/2023/11/structs-in-c-are-fun-part-49.html" },
+       { "description": "Outros cenários nos quais o comportamento dos construtores de structs pode te surpreender", "url": "https://programing-fun.blogspot.com/2023/12/structs-in-c-are-fun-part-59-other.html" },
+       { "description": "Struct com valores padrão para argumentos nos construtores, ou seja, você não está confuso ainda?", "url": "https://programing-fun.blogspot.com/2024/01/structs-in-c-are-fun-part-69-struct.html" },
+       { "description": "A funcionalidade <a href='https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required'>required</a> do C# 11 não vai salvar seu <del>c**</del> emprego." },
+       { "description": "Struct usada como valores padrão para argumentos." },
+       { "description": "Conclusão." }
+    ]
+}

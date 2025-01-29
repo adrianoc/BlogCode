@@ -10,5 +10,7 @@
        { "description": "Le modificateur <a href='https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required'>required</a> du C # 11 ne sauvegardera pas votre <del>c*l</del> emploi." },
        { "description": "Structure utilisée comme valeurs d'argument défaut." },
        { "description": "Conclusion" }
-    ]
+    ],
+
+    "current_post_msg" : "(cet post)"
 }

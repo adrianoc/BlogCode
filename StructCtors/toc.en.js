@@ -10,6 +10,8 @@
         { "description": "<a href='https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required'>required</a> feature from C# 11 will not save your <del>a**</del> job." },
         { "description": "Struct used as default argument values." },
         { "description": "Conclusion." }
-    ]
+    ],
+
+    "current_post_msg" : "(this post)"
  }
  

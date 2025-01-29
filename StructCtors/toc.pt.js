@@ -10,5 +10,7 @@
        { "description": "A funcionalidade <a href='https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/required'>required</a> do C# 11 não vai salvar seu <del>c**</del> emprego." },
        { "description": "Struct usada como valores padrão para argumentos." },
        { "description": "Conclusão." }
-    ]
+    ],
+
+    "current_post_msg" : "(este post)"
 }

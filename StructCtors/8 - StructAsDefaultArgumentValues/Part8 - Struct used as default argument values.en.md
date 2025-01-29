@@ -1,7 +1,18 @@
+[Leia este post em Português]()
+
+[Lire cet post en français.]()
+
+<script>
+populateToc("https://raw.githubusercontent.com/adrianoc/BlogCode/refs/heads/main/StructCtors/toc.en.js", 'struct-series-toc');
+</script>
+
+<p id="struct-series-toc">
+
+Another post about constructor behavior in structs which means more ranting and head scratching 
 
     If struct does not have a parameterless ctor one can use the syntax TypeName t = new()
     Otherwise default need to be used
-    Regardless, the effect is the same, no ctor is invoked and struct is zerod out
+    Regardless, the effect is the same, no ctor is invoked and struct is zeroed out
 
 M();
 M(new S2());

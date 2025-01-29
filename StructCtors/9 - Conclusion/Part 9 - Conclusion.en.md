@@ -1,6 +1,6 @@
-[Leia este post em Português](https://programing-fun.blogspot.com/2023/05/uma-funcionalidade-do-cecilifier-pouco.html)
+[Leia este post em Português]()
 
-[Lire cet post en français.](https://programing-fun.blogspot.com/2023/05/little-unknown-cecilifier-feature.html)
+[Lire cet post en français.]()
 
 <script>
 populateToc("https://gist.githubusercontent.com/adrianoc/3e3a5159d438ea953c46f5a28a417a37/raw/179c99b21f9036026d8073a6e03e83c9b2aed1d4/struct_posts_toc.en.json", 'struct-series-toc');

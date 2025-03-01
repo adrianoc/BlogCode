@@ -1,0 +1,12 @@
+- What is code coverage
+- Configuring for .NET
+- Not covered paths probably hides bugs (no tests)
+- Approach:
+  - Find usage of not fully covered method/properties and either add tests or configure coverage software to ignore
+- Real usage:
+  - [SizeofPrimitiveType](https://app.codecov.io/gh/adrianoc/cecilifier/blob/vnext/Cecilifier.Core%2FExtensions%2FTypeExtensions.cs?trend=all%20time#L63)
+    - Most likely we don't have tests covering some use case involving arrays.
+    - For sure, no coverage fpr Doubles, System.Single (float)
+  - [StindOpCodeFor](https://app.codecov.io/gh/adrianoc/cecilifier/blob/vnext/Cecilifier.Core%2FExtensions%2FTypeExtensions.cs?trend=all%20time#L93)
+    - Is this even a valid scenario? stind for an array element?
+  - Have it uncovered bugs? How many?

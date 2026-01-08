@@ -1,6 +1,6 @@
 The "this cannot happen" happened
 ==
-Some time ago I was investigating a bug in some C# code when I stumbled across an odd behavior: the bug report claimed that a code similar to the one presented below would cause a hang, and that that was 100% reproducible:
+Some time ago I was investigating a bug in some C# code when I stumbled across an odd behavior: the bug report claimed that code very similar to the one presented below would cause a hang, and that that was 100% reproducible:
 
 ```CSharp
 int M(int n)
@@ -15,22 +15,22 @@ int M(int n)
   return M(n - 1);
 }
 ```
-After poking around the code I ended up with 2 hypothesis: i) somehow `SomeMethod()` was never returning or ii) somehow that method never returned **true**[^1] in which case the code would simply call itself in an endless recursion; both hypothesis would more or less explain the reported behavior but each had its own problems: `SomeMethod()` was really simple and I was unable to explain how that method would hang so I disregarded that as a possible explanation, leaving only the second hypothesis but in that case the endless recursion should ultimately lead the program to run out of stack space throwing a `StackOverflowException` which, according to the bug report, did not happen.
+After poking around the code I ended up with 2 hypothesis: i) somehow `SomeMethod()` was never returning or ii) somehow it never returned **true**[^1] in which case the code would simply call itself in an endless recursion; both hypothesis would more or less explain the reported behavior but each had its own problems: `SomeMethod()` was really simple and I was unable to explain how that method would hang so I disregarded that as a possible explanation, leaving only the second hypothesis but in that case the endless recursion should ultimately lead the program to run out of stack space throwing a [StackOverflowException](https://learn.microsoft.com/en-us/dotnet/api/system.stackoverflowexception?view=net-9.0) which, according to the bug report, did not happen.
 
-With no other hypothesis left I finally decided to try to reproduce the described behavior by executing the steps from the bug report but, to my surprise, instead of a hang the code threw a `StackOverflowException` inside method `M()` indicating that, indeed `SomeMethod()` was never returning `true`. At that point I was really confused: What could be causing the different behavior? Was the stack overflow caused by the same problem or could it be something different? 
+Trying to reproduce the described behavior by executing the steps from the bug report was the next logical step but to my surprise, instead of a hang the code threw a `StackOverflowException` inside method `M()` indicating that, indeed `SomeMethod()` was never returning `true`. At that point I was really confused: What could be causing the different behavior? Was the stack overflow caused by the same problem or could it be something different? or maybe the bug report was incorrect?
 
-After some head scratching I decided to run the program exactly like the bug reporter; you see, as a developer I usually run the product built locally on my machine instead of installing it from the officially released binaries so I installed the product from an official installer and run the reproduction steps. This time, to my surprise (again), the program froze.
+After some head scratching I decided to run the program exactly like the bug reporter; you see, as a developer I usually run the product built locally on my machine instead of installing it from officially released binaries so I installed the product from an official installer and run the reproduction steps. This time, to my surprise (again), the program **froze**.
 
 Now I was even more confused: running the program built locally (from exactly the same git revision as reported in the bug) was causing a `StackOverflowException` whereas running the program installed from an installer would simply hang (as described in the bug). After experimenting with a couple of possibilities I realized that one big difference between the two versions was that the one I built locally was built in *debug mode* while the one included in installers is built in *release mode* so I decided to give it a try by recompiling my local version in *release mode* and running the steps to reproduce the issue; this time, to my surprise (for the third time), the program froze so I finally was able to reproduce the bug.
 
-Next step was to understand: i) why the program was hanging and ii) what was causing the difference in behavior between *debug* and *release* modes. From the user point of view, **i** was more important and whence should be my priority but from a programmer point of view **ii** was way more interesting :). Nevertheless I refrained myself from spending a lot of time reasoning about **ii** and, instead, debugged the program and realized that indeed there was a bug in **SomeMethod()** preventing it from ever return **true**.
+Next step was to understand: i) why the program was hanging and ii) what was causing the difference in behavior between *debug* and *release* modes. From the user point of view, **i** was more important and whence should be my priority but from a programmer point of view **ii** was way more interesting :). Nevertheless I refrained myself from spending too much time reasoning about **ii** and, instead, debugged the program and realized that indeed there was a bug in **SomeMethod()** preventing it from ever returning **true**.
 
-After implementing a fix (including a unit test, of course ;)) and verifying it was effective I closed the bug but I was not 100% happy with the outcome: given that the root cause of the problem was `SomeMethod()` never returning `true` I would expect to get a `StackOverflowException` however that only happened in **debug mode**. So I spent some time (more than I would like to admit) investigating it further.
+After implementing a fix (including a unit test, of course ;)) and verifying it was effective I closed the bug but I was not 100% happy with the outcome: given that the root cause of the problem was `SomeMethod()` never returning `true` I would expect to always get a stack overflow, however that only happened in **debug mode**. So I spent some time (more than I would like to admit) investigating it further.
 
 Down the Rabbit Hole
 ==
 
-Since I knew that **release**/**debug** mode was a key factor and that the program was running in .NET 8.0 I decided to compare the disassembled version of a slightly different version of the method in question in both modes by running the program below twice:
+Since I knew that **release**/**debug** mode was a key factor and that the program was running in .NET 8.0 I decided to compare the disassembled[^2] version of a slightly different version of that code in both modes by running the program below twice:
 
 ```CSharp #:26
 using System.Text;
@@ -82,7 +82,7 @@ pwsh -Command { $env:DOTNET_JitDisasm="M"; dotnet run -c Release }
 pwsh -Command { $env:DOTNET_JitDisasm="M"; dotnet run -c Debug }
 ```
 
-Setting `DOTNET_JitDisasm`[^2] environment variable to `M` instructs the [*JIT*](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compilation-by-the-jit-compiler) to print the generated assembly code to the console so I could compare the two versions.
+Setting `DOTNET_JitDisasm`[^3] environment variable to `M` instructs the [*JIT*](https://learn.microsoft.com/en-us/dotnet/standard/managed-execution-process#compilation-by-the-jit-compiler) to print the generated assembly code to the console so I could compare the two versions.
 
 Release mode disassembled code
 ---
@@ -156,10 +156,9 @@ Note that based on the following comment added by the JIT we can conclude that t
 ; optimized using Dynamic PGO
 ```
 
-If we draw a graph where the **nodes** are the various **labels** (`G_M000_IG03`, `G_M000_IG04`, etc) and the **vertices** are the possible targets from a given **node** we will end up with something like:
+If we draw a graph in which the **nodes** are the various **labels** (`G_M000_IG03`, `G_M000_IG04`, etc) and the **vertices** are the possible targets from a given **node** we will end up with something like:
 
-<div align="center">
-<pre class="mermaid">
+```mermaid
 stateDiagram-v2
     [*] --> G_M000_IG03
     G_M000_IG03 --> G_M000_IG04 : n % 10_000 != 0
@@ -168,22 +167,22 @@ stateDiagram-v2
     G_M000_IG04 --> G_M000_IG03 : since Year == 1971 is always false this is an infinite loop.
     G_M000_IG07 --> G_M000_IG04 : 
     G_M000_IG05 --> [*]    
-</pre>
-</div>
+```
 <script type="module">
-       import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
 </script>
 
 and we can easily see that:
 
-1. There's indeed a loop between `G_M000_IG03` and `G_M000_IG04`
-2. The only exit point from is `G_M000_IG05` but the code never reaches it since `Year == 1971` is never **true**
+1. There's no signs of a recursion
+1. Instead, it seems that the recursion has been replaced by a loop (labels `G_M000_IG03` and `G_M000_IG04`)[^4]
+1. The only return point from the method is `G_M000_IG05`, which the code never reaches since `Year == 1971` is always **false**
 
 **Debug mode** disassembled code
 ---
-Below you can see the disassembled version when run in **debug mode**. 
+As my next step I collected the assembly for the same method, but this time in **debug mode**:
 
-```nasm #:74
+```nasm #:81
 ; Assembly listing for method Test:M(int):int:this (MinOpts)
 ; Emitting BLENDED_CODE for X64 with AVX - Unix
 ; MinOpts code
@@ -286,12 +285,13 @@ Noteworthily points:
 
 1. The assembled code is longer when compared to the one generated for the **release mode** (261 versus 120 bytes)
 2. I won't bother trying to understand, let alone explaining, it.
-3. It suffices to say that at line #82 we can see `M()` being called recursively (`call [Test:M(int):int:this]`)
+3. Identically to the code in `release mode` the only _return point_ from the method is never executed due to the expression `Year == 1971` never being `true`
+4. At line #82 one can see `M()` being called recursively (`call [Test:M(int):int:this]`)
+5. The JIT comment about code optimization is not present whence I assumed the code has not been optimized (which makes sense since we are running in debug mode)
 
 Lets draw a similar graph:
 
-<div align="center">
-<pre class="mermaid">
+```mermaid
 stateDiagram-v2
     StartOfMethod: M
     [*] --> StartOfMethod
@@ -301,15 +301,14 @@ stateDiagram-v2
     G_M000_IG05 --> G_M000_IG07 : Year == 1971
     G_M000_IG06 --> StartOfMethod: recursive call
     G_M000_IG07 --> [*]
-</pre>
-</div>
+```
 
 Now it is pretty clear that in **debug mode** the `recursive call` has been preserved in the assembly code which explains the `StackOverflowException`.
 
 Summary
 ==
 
-In the end, the behavior in *both* (**debug** and **release**) *modes* were plausible and was the result of the compiler (in this case the JIT) optimizing the code in **release mode** while running it **as is** in **debug mode**.
+In the end, the behavior in *both* (**debug** and **release**) *modes* were plausible and the difference was the result of the compiler (in this case the JIT) optimizing the code (a tail call optimization[^4], to be more precise) in **release mode** while running it **as is** in **debug mode**.
 
 As always, all feedback is welcome.
 
@@ -318,4 +317,8 @@ Have fun!
 
 [^1]: Or at least it was returning `false` enough times to lead to a deep recursion
 
-[^2]: The are more [environment variables](https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/jit/viewing-jit-dumps.md) that can be set to control JIT disassembling output.
+[^2]: Before jumping into assembly code (which I know very little) I first checked the `IL` instructions for both modes but I could not spot anything that would explain the difference in behavior (the `IL` for both modes were essentially identical).
+
+[^3]: The are more [environment variables](https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/jit/viewing-jit-dumps.md) that can be set to control JIT disassembling output.
+
+[^4]: This is known as [tail call optimization](https://en.wikipedia.org/wiki/Tail_call).
